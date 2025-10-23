@@ -1,0 +1,46 @@
+#!/bin/bash
+
+ETAT="
+    Le jeu se passe au début du règne de Louis VI le Gros.
+
+    Le joueur se trouve dans le village de Châtel Saint Germain, sur
+    la place du marché. Il est habillé d'une culotte, d'une tunique,
+    de sabots, et a une bourse avec 1 denier et 10 sous.
+
+    Imagine un certain nombre de paysans, d'artisans et de marchants, avec
+    leurs produits à vendre.
+
+    Tu prendras soin d'imager un nom, un métier, et une 'vie' pour chacun
+    de ces personnanges, dans le contexte historique, afin de pouvoir
+    répondre de façon réaliste.
+"
+if [ ! -r ~/.moyen-age.state ] ; then
+    echo "$ETAT" > ~/.moyen-age.state
+fi
+MESSAGE="Où suis-je?"
+
+while [ "$MESSAGE" != quit ] ; do 
+    ETAT=$(cat ~/.moyen-age.state)
+    # echo "ETAT = $ETAT"    
+    RESULT=$(./ollama-game --context-file ~/works/moyen-age/moyen-age.context \
+"ETAT:
+${ETAT}
+
+MESSAGE:
+${MESSAGE}
+")
+
+    
+    NOUVEL_ETAT=$(echo "${RESULT}"|sed -e '/ETAT:/d' -e '/^ *REPONSE:/,$d')
+    REPONSE=$(echo "${RESULT}"|sed -e '1,/^ *REPONSE:/d')
+
+    # echo "RESULT = $RESULT"
+    # echo "NOUVEL_ETAT = $NOUVEL_ETAT"
+    # echo "REPONSE = $REPONSE"
+
+    echo "$NOUVEL_ETAT" > ~/.moyen-age.state
+    echo "$REPONSE" | fmt
+    read -p "> " MESSAGE
+done
+
+    
