@@ -1,2 +1,22 @@
+Moyen-Age
+---------
+
 This is a little text-based role game,
 implemented with local LLM AI (ollama).
+
+To launch the game:
+
+    cd moyen-age
+    ./game
+
+It uses the ollama-game script at each
+step to communicate with the LLM.
+
+It saves the current state in ~/.moyen-age.state
+
+BUGS:
+
+- the state is not cummulative. It only keps the "current" status,
+  forgetting older state. So if we come back to a previous place, it
+  will have forgotten what was determined in that place previously.
+
